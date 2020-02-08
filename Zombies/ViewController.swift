@@ -29,6 +29,8 @@ class ViewController: UIViewController {
     
     // MARK: Actions
     // FIXME: this action is never called, why?
+    
+    // Hay que poner en la vista el tap gesture y enlazarlo con esta accion
     @IBAction func didTapOverlayView(_ sender: UITapGestureRecognizer) {
         if remainingLives == 0 || game.hasWon {
             newGame()
@@ -90,6 +92,10 @@ class ViewController: UIViewController {
         updateUI()
         hideFinalMessage()
         // TODO: update number of wins and losses in the UI
+        
+        // actualizamos las totalwins y totalLosses del label
+        totalWinsLabel.text = "W: \(totalWins)"
+        totalLossesLabel.text = "L: \(totalLosses)"
     }
     
     func newRound() {
@@ -111,13 +117,46 @@ class ViewController: UIViewController {
         // update buttons
         // TODO: disable buttons that are not possible, e.g. down when there is no way to go down
         // can you find a way to gray out the disabled button as well?
+        
+        // para deshabilitar los botones llamamos a la funcion canPlayerMove perteneciente al struct Game
+        upButton.isEnabled = game.canPlayerMove(.up)
+        downButton.isEnabled =  game.canPlayerMove(.down)
+        rightButton.isEnabled = game.canPlayerMove(.right)
+        leftButton.isEnabled = game.canPlayerMove(.left)
+       
+        // Para tener un efecto de que el boton esta desactivado, cambio la propiedad .alpha de los botones. En el caso que se pueda mover la pongo a 1 y si no se puede mover lo pongo a 0.5
+        if upButton.isEnabled {
+            upButton.alpha = 1
+        } else {
+            upButton.alpha = 0.5
+        }
+        
+        if downButton.isEnabled {
+            downButton.alpha = 1
+        } else {
+            downButton.alpha = 0.5
+        }
+        
+        if rightButton.isEnabled {
+            rightButton.alpha = 1
+        } else {
+            rightButton.alpha = 0.5
+        }
+        
+        if leftButton.isEnabled {
+            leftButton.alpha = 1
+        } else {
+            leftButton.alpha = 0.5
+        }
+
     }
 
     func updateSquare(_ x: Int, _ y: Int, _ content: String) {
         // FIXME: this formula to translate (x, y) coordinates to tag id is buggy,
         // can you fix it? And what does that strange code with filter do?
         // Can you find it in the documentation? Or maybe you can guess what it does?
-        let coordinatesAsTag = x + y
+        // Hay que multiplicar la posicion x por 5 para poder sacar el numero del tag de manera correcta
+        let coordinatesAsTag = 5*x + y
         let squareLabel = gridSquare.filter { $0.tag == coordinatesAsTag }.first
         squareLabel?.text = content
     }
